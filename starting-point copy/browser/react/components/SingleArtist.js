@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import Songs from '../components/Songs';
 import axios from 'axios';
 import AllAlbums from './AllAlbums';
-import { Link, Route } from 'react-router-dom';
+import NoMatch from './NoMatch';
+import { Switch, Link, NavLink, Route } from 'react-router-dom';
 
 export default class SingleArtist extends Component {
 
@@ -22,7 +23,8 @@ export default class SingleArtist extends Component {
     .then(res => res.data);
 
   Promise.all([artistPromise, albumsPromise, songsPromise])
-    .then((results) => this.setState({artisitInfo : results}));
+    .then((results) => this.setState({artisitInfo : results}))
+    .catch(console.log);
   }
 
   render () {
@@ -36,17 +38,20 @@ export default class SingleArtist extends Component {
         <div>
           <h3>{ artist.name }</h3>
           <ul className="nav nav-tabs">
-            <li><Link to={`/artists/${artist.id}/albums`}>ALBUMS</Link></li>
-            <li><Link to={`/artists/${artist.id}/songs`}>SONGS</Link></li>
+            <li><NavLink to={`/artists/${artist.id}/albums`} activeClassName="active">ALBUMS</NavLink></li>
+            <li><NavLink to={`/artists/${artist.id}/songs`} activeClassName="active">SONGS</NavLink></li>
           </ul>
 
           {/* Routes will go here! */}
-          <Route path = '/artists/:artistId/albums' render={() => <AllAlbums albums={albums} /> } />
-          <Route path = '/artists/:artistId/songs' render={() => <Songs songs={songs} /> } />
+          <Switch>
+            <Route exact path = '/artists/:artistId/albums' render={() => <AllAlbums albums={albums} /> } />
+            <Route exact path = '/artists/:artistId/songs' render={() => <Songs songs={songs} /> } />
+            <Route path = '*' component = {NoMatch} />
+          </Switch>
         </div>
       );
     } else {
-      return <div></div>;
+      return <div>Not Found!</div>;
     }
   }
 }
