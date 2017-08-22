@@ -35,7 +35,7 @@ export default class SingleArtist extends Component {
         <div>
           <h3>{artist.name}</h3>
           <h4>
-            ALBUMS
+            <AllAlbums albums = {albums} />
           </h4>
           <h4>
             <Songs songs={songs} />
